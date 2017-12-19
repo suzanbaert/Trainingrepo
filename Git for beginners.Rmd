@@ -1,0 +1,194 @@
+---
+title: "Git workflows for R users"
+author: "Suzan Baert"
+date: "19 December 2017"
+output: html_document
+---
+
+Objective of teh post
+The below workflows are mostly focused on backing up your repostiories rather than collaboration. 
+
+What if collaborative?
+git pull origin master rather than git pull in general
+
+
+# What is GIT and Github?
+
+
+
+# Getting started
+### Github account
+Make a github account so you can work on your own project from multiple computers, you can share and collaborate or even just to have your history backed-up somewhere.
+
+### Git installation
+Download and follow the instructions on git-scm.com
+
+### First time set-up
+Open the GIT bash or command program to configure your user name and email.
+To double check that the values are saved, 
+
+```{}
+#Configure your user settings:
+$ git config --global user.name "Your Name"
+$ git config --global user.email "Your.Email@email.com"
+
+#Check that the values are saved:
+$ git config --global --list
+```
+
+
+
+
+
+# Workflows 1: Getting your 
+
+## 1.1 Starting a new repository on GIT
+The easiest case is to start a completely new repository with GIT version control.
+
+Step 1: Make a new repository on github and save the link XXXXXXXXXXXX
+
+Step 2: Make a new project in R studio with GIT control and copy the link 
+Alternative is to make a project in Rstudio as you normally would do.
+
+
+
+
+## 1.2 An existing repository that doesn't yet exist on your computer
+
+Browse to the directory you want to use for this local copy:
+$ git clone Enter_your_Github_URL 
+
+## 1.3
+
+
+
+
+# Workflow 2: Basic commits of your work
+
+```{}
+#First check whether you have the latest material
+$ git pull
+
+#Optional: check the differences between working directory, staging area and git directory
+$ git status
+
+#Optional: what are the changes I made to the code
+$ git diff
+
+#Add all the files to the staging area
+$ git add -A
+
+#Make a commit on your work
+$ git commit -m "enter your commit message"
+
+#Push your latest commit to github
+$ git push
+```
+
+
+<br>
+
+# Workflow 3: Branches
+Bigger changes are best made on a branch first, and only merged onto the master after they are fully working
+
+you can create the remote branch at any time, after checkout or only just before the first push. I find it easiest to make it straight after creation so I don't forget
+
+Adding -u ensures that the local and remote branch are connected.
+
+```{}
+#Optional: List all existing branches (local and remote)
+$ git branch -a
+
+#Creating a new branch locally
+$ git branch YourBranchName
+
+#Creating the new branch remotely
+$ git push -u origin YourBranchName
+
+#Swapping to the new branch to work on
+$ git checkout YourBranchName
+```
+
+
+(...)
+#Work, add, commit and push on the new branch 
+(...)
+
+Ready to merge the branch with the master?
+
+```{}
+#Changing back to master branch
+$ git checkout master
+
+#Make sure your copy of master is up to date
+$ git pull origin master
+
+#Merging the branch on the master
+$ git merge YourBranchName
+
+#Optional: check the merged branches, YourBranchName should be int he list
+$ git branch --merged
+
+#Push the changes to master
+$ git push origin master
+
+#Deleting the branch locally
+$ git branch -d YourBranchName
+
+#Deleting the branch remotely
+$ git push origin --delete YourBranchName
+
+```
+
+
+
+<br>
+
+# Workflow 4: Ooops... I want to undo
+
+```{}
+#Removing files from the staging area to working directory
+$ git reset
+```
+
+
+
+
+<br>
+# Workflow 5: Oh no... undo-undo-undo
+
+```{}
+Show log
+$ git log
+
+Quit the log list when you got what you need
+
+
+
+```
+
+
+
+
+
+
+# Appendix
+
+
+### Browsing and terminology 
+cd foldername
+cd ..
+#shows inside contents 
+$ ls
+
+Naming
+* Origin: the name of the remote repository
+* Master: the default name of the primary branch
+* HEAD: 
+
+
+## Git add 
+* git add -A    stages all files
+* git add .     stages new and modified, without deleted
+* git add -u    stages modified and deleted, without new
+* git add file.R stages just the 'file.R' file
