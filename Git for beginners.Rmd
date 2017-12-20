@@ -1,12 +1,10 @@
 ---
 title: "Git workflows for R users"
-output: 
-  html_document:
-    toc: true
-    toc_depth: 2
+output: beamer_presentation 
 ---
 
 # Basic Git Workflows
+<br><br>
 
 This does not cover the installation or set-up of Git, nor does it cover advanced workflows with Stash 
 
@@ -18,7 +16,7 @@ This does not cover the installation or set-up of Git, nor does it cover advance
 
 * Step 1: Make a new repository on github and grab the link from the `clone with SSH` option.
 * Step 2: Make a new project in R studio with Git control and copy the link.
-<br>
+<br><br>
 
 
 
@@ -34,11 +32,15 @@ $ git init
 #Add the remote repository
 $ git remote add origin YourGithubLink
 
+#Add and commit the files
+$ git add -A
+$ git commit m "commit message"
+
 #Make the link between the local and remote repository
 $ git push -u origin master
 
 ```
-
+<br><br>
 
 ## 1.3 An existing project on Github but not yet on your pc
 
@@ -48,16 +50,8 @@ Browse to the right root folder and just type:
 $ git clone TheGithubLink
 
 ```
+<br><br>
 
-
-
-
-
-
-```{}
-
-
-```
 
 
 # Workflow 2: Basic commits of your work
@@ -81,9 +75,8 @@ $ git commit -m "enter your commit message"
 #Push your latest commit to github
 $ git push
 ```
+<br><br>
 
-
-<br>
 
 # Workflow 3: Branches
 Bigger changes are best made on a branch first, and only merged onto the master after they are fully working
@@ -126,7 +119,7 @@ $ git merge YourBranchName
 #Optional: check the merged branches, YourBranchName should be in the list
 $ git branch --merged
 
-#Push the changes to master
+#Push the changes of master to the remote repository
 $ git push origin master
 
 #Deleting the branch locally
@@ -136,10 +129,9 @@ $ git branch -d YourBranchName
 $ git push origin --delete YourBranchName
 
 ```
+<br><br>
 
 
-
-<br>
 
 # Workflow 4: Ooops... I want to undo
 
@@ -154,11 +146,9 @@ $ git revert hashcode_to_revertcommit
 #Removing files from the staging area to working directory
 $ git reset
 ```
+<br><br>
 
 
-
-
-<br>
 # Workflow 5: Oh no... undo-undo-undo
 
 ```{}
@@ -170,7 +160,7 @@ Quit the log list when you got what you need
 
 
 ```
-
+<br><br>
 
 
 
