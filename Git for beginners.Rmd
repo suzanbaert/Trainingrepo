@@ -150,9 +150,9 @@ $ git push origin --delete YourBranchName
 #Undo the changes made on an R file (not staged yet!) and return the previous version
 $ git checkout filename.R
 
+#Undo a commit without losing the actual commit
+$ git revert hashcode_to_revertcommit
 
-#I commited on the wrong branch?
-$ git log
 
 #Removing files from the staging area to working directory
 $ git reset
@@ -178,8 +178,10 @@ Quit the log list when you got what you need
 
 
 
-#I commited on the wrong branch?
-#find the previous hjas
+## committing on the wrong branch
+
+```
+#find the previous hashcode
 $ git log 
 
 $ git checkout BranchName
@@ -193,6 +195,7 @@ $ git log
 #deleting the commit on the master branch
 $ git checkout master
 $ git reset 
+```
 
 
 
@@ -226,6 +229,10 @@ Naming
 * Origin: the name of the remote repository
 * Master: the default name of the primary branch
 * HEAD: 
+
+
+git log
+git reflog: shows commits in order of reference, walk through of exactly what you did
 
 
 ## Git add 
