@@ -1,66 +1,63 @@
 ---
 title: "Git workflows for R users"
-author: "Suzan Baert"
-date: "19 December 2017"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
 ---
 
-Objective of teh post
-The below workflows are mostly focused on backing up your repostiories rather than collaboration. 
+# Basic Git Workflows
 
-What if collaborative?
-git pull origin master rather than git pull in general
-
-
-# What is GIT and Github?
+This does not cover the installation or set-up of Git, nor does it cover advanced workflows with Stash 
 
 
 
-# Getting started
-### Github account
-Make a github account so you can work on your own project from multiple computers, you can share and collaborate or even just to have your history backed-up somewhere.
+# Workflows 1: Initializing your repository set up
 
-### Git installation
-Download and follow the instructions on git-scm.com
+## 1.1 Starting a completely new project
 
-### First time set-up
-Open the GIT bash or command program to configure your user name and email.
-To double check that the values are saved, 
+* Step 1: Make a new repository on github and grab the link from the `clone with SSH` option.
+* Step 2: Make a new project in R studio with Git control and copy the link.
+<br>
+
+
+
+## 1.2 An existing project on your PC that is not yet tracked by Git
+
+* First make a remote repository on Github and grab the link from the `clone with SSH` option.
+* Browse through the right folder in the command line, or browse in your normal explorer to the right folder and right click "Git Bash here":
 
 ```{}
-#Configure your user settings:
-$ git config --global user.name "Your Name"
-$ git config --global user.email "Your.Email@email.com"
+#Initialize git tracking
+$ git init
 
-#Check that the values are saved:
-$ git config --global --list
+#Add the remote repository
+$ git remote add origin YourGithubLink
+
+#Make the link between the local and remote repository
+$ git push -u origin master
+
+```
+
+
+## 1.3 An existing project on Github but not yet on your pc
+
+Browse to the right root folder and just type:
+```{}
+#Making a copy of the repository 
+$ git clone TheGithubLink
+
 ```
 
 
 
 
 
-# Workflows 1: Getting your 
 
-## 1.1 Starting a new repository on GIT
-The easiest case is to start a completely new repository with GIT version control.
-
-Step 1: Make a new repository on github and save the link XXXXXXXXXXXX
-
-Step 2: Make a new project in R studio with GIT control and copy the link 
-Alternative is to make a project in Rstudio as you normally would do.
+```{}
 
 
-
-
-## 1.2 An existing repository that doesn't yet exist on your computer
-
-Browse to the directory you want to use for this local copy:
-$ git clone Enter_your_Github_URL 
-
-## 1.3
-
-
+```
 
 
 # Workflow 2: Basic commits of your work
