@@ -126,7 +126,7 @@ $ git pull origin master
 #Merging the branch on the master
 $ git merge YourBranchName
 
-#Optional: check the merged branches, YourBranchName should be int he list
+#Optional: check the merged branches, YourBranchName should be in the list
 $ git branch --merged
 
 #Push the changes to master
@@ -147,6 +147,13 @@ $ git push origin --delete YourBranchName
 # Workflow 4: Ooops... I want to undo
 
 ```{}
+#Undo the changes made on an R file (not staged yet!) and return the previous version
+$ git checkout filename.R
+
+
+#I commited on the wrong branch?
+$ git log
+
 #Removing files from the staging area to working directory
 $ git reset
 ```
@@ -169,6 +176,40 @@ Quit the log list when you got what you need
 
 
 
+
+
+#I commited on the wrong branch?
+#find the previous hjas
+$ git log 
+
+$ git checkout BranchName
+
+#cherry-pick commit from master to branch
+$ git cherry-pick paste_haschode_here
+
+#shows log on branchname with the new commit
+$ git log
+
+#deleting the commit on the master branch
+$ git checkout master
+$ git reset 
+
+
+
+
+### git resets
+
+$ git reset --soft paste_haschode_here
+  Reset to specified commit, but will keep changes in the staging area
+  
+$ git reset  paste_haschode_here
+  Default setting. Reset to specified commit, changes are in the working directory rather than the staging area
+
+$ git reset --hard paste_haschode_here
+  Really don't want the changes made, I want to go back to where we were before. All files will match the state    they were at the previous commit. Clears staging area and working directory on tracked files.
+
+#cleans any untracked files and folders
+$ git clean -df
 
 
 
