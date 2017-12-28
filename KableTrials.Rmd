@@ -1,0 +1,105 @@
+---
+title: "Kable trials"
+output: html_document
+---
+
+```{r message=FALSE}
+library(ggplot2)
+library(dplyr)
+```
+
+
+# normal table
+/  
+
+```{r}
+#no changes
+diamonds %>%
+  group_by(cut) %>% 
+  summarise(n=n(), mean_price=mean(price), mean_carat=mean(carat))
+
+```
+
+# Kable
+Usage
+kable(x, format, digits = getOption("digits"), row.names = NA, col.names = NA, align, 
+    caption = NULL, format.args = list(), escape = TRUE, ...)
+    
+
+Basic Kable:
+```{r}
+diamonds %>%
+  group_by(cut) %>% 
+  summarise(n=n(), mean_price=round(mean(price)), mean_carat=round(mean(carat))) %>% 
+  knitr::kable()
+
+```
+
+
+
+
+Kable with options:
+```{r}
+diamonds %>%
+  group_by(cut) %>% 
+  summarise(n=n(), mean_price=mean(price), mean_carat=mean(carat)) %>% 
+  knitr::kable(digits=1,  
+               align="c",
+               caption="Example table",
+               col.names = c("cut breakout", "count", "average price", "average carat"))
+
+```
+
+
+### KableExtra with options:
+```{r}
+diamonds %>%
+  group_by(cut) %>% 
+  summarise(n=n(), mean_price=mean(price), mean_carat=mean(carat)) %>% 
+  knitr::kable(digits=1,  
+               align="c",
+               format="html",
+               caption="Example table",
+               col.names = c("cut breakout", "count", "average price", "average carat"))%>%
+  kableExtra::kable_styling(bootstrap_options=c("hover", "bordered"))
+
+```
+
+
+### KableExtra with row options:
+```{r}
+diamonds %>%
+  group_by(cut) %>% 
+  summarise(n=n(), mean_price=mean(price), mean_carat=mean(carat)) %>% 
+  knitr::kable(digits=1,  
+               align="c",
+               format="html",
+               caption="Example table",
+               col.names = c("cut breakout", "count", "average price", "average carat")) %>%
+  kableExtra::kable_styling(bootstrap_options=c("hover", "bordered")) %>%
+  kableExtra::row_spec(3, color = "blue") %>%
+  kableExtra::row_spec(2, background = "yellow")
+
+```
+
+
+### KableExtra: not on full width
+position = "float_right" argument makes the table float next to the text underneath
+
+```{r}
+diamonds %>%
+  group_by(cut) %>% 
+  summarise(n=n(), mean_price=mean(price), mean_carat=mean(carat)) %>% 
+  knitr::kable(format="html") %>%
+  kableExtra::kable_styling(full_width = F, font_size = 11)
+
+```
+
+
+
+
+
+```{r}
+
+
+```
