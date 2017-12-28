@@ -1,0 +1,21 @@
+---
+title: "IconTrials"
+output: html_document
+---
+
+```{r setup, warning=FALSE, message=FALSE}
+library(icon)
+icon::fa("rocket")
+icon::ai("dataverse")
+```
+
+Adding inline awesomeness `r icon::fa("rocket")`
+Then just some text
+
+# `r icon::fa("tags")` Title
+
+## `r icon::fa("area-chart")` Graph
+
+## text before `r icon::fa("address-book-o")` Acknowledgements
+
+Here comes some text
