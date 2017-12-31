@@ -1,0 +1,61 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+<style>
+div.blue pre { background-color:lightblue; }
+div.blue pre.r { background-color:blue; }
+</style>
+
+<div class = "blue">
+```{r bluecars}
+summary(cars)
+```
+</div>
+
+```{r normal}
+summary(cars)
+```
+
+
+<style>
+pre.bluecars {
+    background-color: #aabbff !important;
+}
+pre.redcars {
+    background-color: #ffbbbb !important;
+}
+</style>
+
+## chunk-specific bg colors
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+- blue
+
+```{bluecars}
+summary(cars)
+```
+
+```{r, echo=FALSE}
+summary(cars)
+```
+
+- normal
+
+```{r}
+summary(cars)
+```
+
+- red
+
+```{redcars}
+summary(cars)
+```
+
+```{r, echo=FALSE}
+summary(cars)
+```
