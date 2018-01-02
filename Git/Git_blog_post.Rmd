@@ -1,0 +1,42 @@
+---
+title: "Git post"
+output: html_document
+---
+
+
+<style>
+pre.bluecars {
+    background-color: #aabbff !important;
+}
+pre.redcars {
+    background-color: #ffbbbb !important;
+}
+</style>
+
+## chunk-specific bg colors
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+- blue
+
+```{bluecars}
+summary(cars)
+```
+
+
+
+Using Custom CSS
+You may wish to set your own CSS -- knitr and rmarkdown make this easy for you. If you are using the rmarkdown package, you can include your CSS file by setting a parameter in the YAML header (reference). You can also include a chunk of CSS code, as is done here.
+
+Note that for this example, only class.source is set.
+
+.bad-code { background-color: salmon; }
+mtcars[, "mpg"] 
+
+
+
+Using GIT as version control is saving me a lot of different file versions on my PC. However the first time I had to go back and undo changes, it was a nervous wrack. I had put myself in "detached HEAD mode" and I was a bit scared the whole thing would fall apart. So I have one piece of advice... if it's your first time going back into previous commits, don't immediately do it on a file that matters, but create a new repository to try things out where it doesn't really matter. 
+  
+In fact, it might not be bad to play around with GIT on such a repository just to get the hang of it. I did that quite a bit and I feel an aweful lot more secure with GIT undoing since I did that.
