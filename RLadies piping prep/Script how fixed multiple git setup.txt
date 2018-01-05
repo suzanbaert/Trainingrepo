@@ -1,0 +1,28 @@
+Started from this to create a second SSH file to my personal github (IN GIT BASH)
+
+https://gist.github.com/RichardBronosky/dc0ced21d6dc7be7d196
+
+
+configure file via notepad in windows
+Main account
+Host gitlab.pg.com
+  HostName gitlab.pg.com
+  User git
+  PreferredAuthentications publickey
+  Identityfile ~/.ssh/id_rsa
+  IdentitiesOnly yes
+
+#Github account
+Host github.com
+  HostName github.com
+  User git
+  Identityfile ~/.ssh/id_rsa_github
+  IdentitiesOnly yes
+
+Getting the key to add to the remotea ccount
+$ clip < ~/.ssh/id_rsa_github.pub
+
+
+Check authentification
+$ ssh -T git@github.com
+
