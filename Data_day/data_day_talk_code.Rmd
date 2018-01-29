@@ -1,0 +1,208 @@
+---
+title: "Data Day Talk Code"
+author: "Emily Robinson"
+date: "1/18/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = TRUE)
+library(tidyverse)
+library(magrittr)
+```
+
+## Reading in the data
+
+We'll try the base R way first. 
+
+```{r}
+multiple_choice_responses_base <- read.csv("multipleChoiceResponses.csv")
+multiple_choice_responses_base
+```
+
+Now we can count NAs in each column.
+
+```{r}
+# for one column
+sum(is.na(multiple_choice_responses_base$Country))
+```
+
+For every column: 
+
+```{r}
+multiple_choice_responses_base %>%
+  purrr::map_df(~sum(is.na(.)))
+```
+
+No NAS - too good to be true?
+
+```{r}
+multiple_choice_responses_base %>%
+  dplyr::count(StudentStatus)
+```
+
+Use `na_if` to change `""` to `NA`. 
+
+```{r}
+multiple_choice_responses_base %<>% 
+  dplyr::na_if("")
+
+# is the same as: 
+multiple_choice_responses_base <- multiple_choice_responses_base %>%
+  na_if("")
+
+```
+
+Now we can count the NAs again. 
+
+```{r}
+multiple_choice_responses_base %>%
+  purrr::map_df(~sum(is.na(.)))
+```
+
+Alternative: use `readr::read_csv` instead of `read.csv`. 
+
+```{r}
+multiple_choice_responses <- readr::read_csv("multipleChoiceResponses.csv")
+```
+
+Check out the issues noted. 
+
+```{r}
+problems(multiple_choice_responses)
+```
+
+```{r}
+multiple_choice_responses <- readr::read_csv("multipleChoiceResponses.csv", 
+                                             guess_max = nrow(multiple_choice_responses))
+```
+
+### Examining the datset 
+
+```{r}
+colnames(multiple_choice_responses)
+```
+
+Use `skimr::skim()` to examine numeric columns with `select_if`. 
+
+```{r}
+multiple_choice_responses %>%
+  select_if(is.numeric) %>%
+  skimr::skim()
+```
+
+Use `n_distinct()` and `map_df` to see the number of distinct answers for every quesiton.  
+
+```{r}
+multiple_choice_responses %>%
+  purrr::map_df(~n_distinct(.)) 
+```
+
+Rearrange the data into long format. 
+
+```{r}
+multiple_choice_responses %>%
+  purrr::map_df(~n_distinct(.)) %>%
+  tidyr::gather(question, num_distinct_answers) %>%
+  arrange(desc(num_distinct_answers))
+```
+
+### Examine Work Methods
+
+Let's take a look at one of the ones with the most distinct answers. 
+
+```{r}
+multiple_choice_responses %>%
+  count(WorkMethod = forcats::fct_infreq(WorkMethodsSelect))
+```
+
+Here people are clearly selecting multiple answers, recorded separated by commas. Let's tidy it up. 
+
+```{r}
+nested_workmethods <- multiple_choice_responses %>%
+  select(WorkMethodsSelect) %>%
+  filter(!is.na(WorkMethodsSelect)) %>%
+  mutate(work_method = str_split(WorkMethodsSelect, ",")) 
+
+nested_workmethods
+```
+
+We can unnest. 
+
+```{r}
+unnested_workmethods <- nested_workmethods %>%
+  unnest(work_method) %>%
+  select(work_method)
+
+unnested_workmethods
+```
+
+Get the number of people using each work method. 
+
+```{r}
+method_freq <- unnested_workmethods %>%
+  count(method = fct_infreq(work_method))
+
+method_freq
+```
+
+### Examine Work Challenges
+
+Find all columns about `WorkChallengeFrequency` using the dplyr `select` helper `contains` and clean the data. 
+
+```{r}
+WorkChallenges <- multiple_choice_responses %>%
+  select(contains("WorkChallengeFrequency")) %>%
+  gather(question, response) %>%
+  filter(!is.na(response)) %>%
+  mutate(question = stringr::str_replace(question, "WorkChallengeFrequency", "")) 
+
+WorkChallenges
+```
+
+Try an initial plot. 
+
+```{r}
+ggplot(WorkChallenges, aes(x = response)) + 
+  geom_bar() + 
+  facet_wrap(~question) + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+Reorder the graphs. 
+
+```{r}
+WorkChallenges %>%
+  mutate(response = forcats::fct_relevel(response, "Rarely", "Sometimes", "Often", "Most of the time")) %>%
+  ggplot(aes(x = response)) + 
+  geom_bar() + 
+  facet_wrap(~question) + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+Dichotomize the variable to make one graph with data for all the questions and easily compare them. 
+
+```{r}
+perc_problem_work_challenge <- WorkChallenges %>%
+  mutate(response = if_else(response %in% c("Most of the time", "Often"), 1, 0)) %>%
+  group_by(question) %>%
+  summarise(perc_problem = mean(response)) 
+```
+
+```{r}
+ggplot(perc_problem_work_challenge, aes(x = question, y = perc_problem)) + 
+  geom_point() +
+  coord_flip()
+```
+
+Use `forcats:fct_reorder` to have the x-axis be ordered by another variable, in this case the y-axis. Use`scale_y_continuous` and`scales::percent` to u pdate our axis to display in percent and `labs` to change our axis labels. 
+
+```{r}
+ggplot(perc_problem_work_challenge, aes(x = fct_reorder(question, perc_problem), y = perc_problem)) + 
+  geom_point() +
+  coord_flip() + 
+  scale_y_continuous(labels = scales::percent) + 
+  labs(x = "Question", y = "Percentage encountering challenge frequently")
+```
+
