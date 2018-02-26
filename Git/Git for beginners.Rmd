@@ -1,6 +1,6 @@
 ---
 title: "Git workflows for R users"
-output: beamer_presentation 
+output: html_document
 ---
 
 # Basic Git Workflows
