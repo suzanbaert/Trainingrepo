@@ -168,6 +168,11 @@ kickstarter_data %>%
   arrange(desc(n))
 
 
+
+ickstarter
+
+
+
 kickstarter %>%
   filter_all(any_vars(. > 1000000))
 
