@@ -1,0 +1,119 @@
+---
+title: "Titanic Trees Training"
+output: html_document
+---
+
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+
+library(readr)
+library(dplyr)
+library(Metrics)
+
+titanic <- read_csv(here::here("Kaggle_ML", "2_Titanic", "data", "train.csv"))
+
+set.seed(123)
+test_index <- sample(1:nrow(titanic), size =0.15*nrow(titanic))
+titanic_test <- titanic[test_index, ]
+titanic_train <- titanic[-test_index, ]
+
+glimpse(titanic)
+```
+
+
+# Decision trees
+
+
+# 1. Standard decision tree - no pruning
+
+```{r}
+library(rpart)
+library(rpart.plot)
+
+dt_model <- rpart(Survived ~ Pclass + Sex + Age + Fare + Embarked, 
+                  data = titanic_train,
+                  method = "class")
+
+rpart.plot(dt_model)
+
+```
+
+
+Getting accuracy and confusionMatrix.
+Accuracy is 0.812
+
+
+```{r}
+dt_pred <- predict(dt_model, titanic_test, type = "class")
+
+#Accuracy
+paste("Accuracy:", mean(dt_pred == titanic_test$Survived))
+
+#Classification error
+paste("Classificaton error", ce(actual = titanic_test$Survived, predicted = dt_pred))
+
+#Pretty much everything
+caret::confusionMatrix(dt_pred, reference = as.factor(titanic_test$Survived))
+
+```
+
+To get to auc, first redo predictions to get to prob.
+- For auc, should not forget to put the second column of the predicted values, otherwise odd things are happening :)
+
+
+```{r}
+#generate probability prediction
+dt_pred_p <- predict(dt_model, titanic_test, type = "prob")
+
+#auc
+dt_auc <- auc(actual = titanic_test$Survived, predicted = dt_pred_p[, 2])
+dt_auc
+
+```
+
+<br>
+
+
+# 2. Decision tree - via cp optimal
+
+```{r}
+
+#plotcp
+plotcp(dt_model)
+
+#optimal cp
+dt_model$cptable
+cp_opt_index <- which.min(dt_model$cptable[ , "xerror"])
+cp_opt <- dt_model$cptable[cp_opt_index, "CP"]
+
+```
+
+
+New tree postpruned:
+
+
+```{r}
+dt_model_cpopt <- prune(dt_model, cp = cp_opt)
+rpart.plot(dt_model_cpopt)
+```
+
+- After pruning, accuracy and classification error are similar
+- AUC went down from 0,833 to 0,796
+
+
+```{r}
+dt_pred_cpopt <- predict(dt_model_cpopt, titanic_test, type = "class")
+
+#accuracy/ce
+paste("Accuracy:", mean(dt_pred == titanic_test$Survived))
+paste("Classificaton error", ce(actual = titanic_test$Survived, predicted = dt_pred))
+caret::confusionMatrix(data = dt_pred_cpopt, reference = as.factor(titanic_test$Survived))
+
+#auc
+dt_pred_cpopt_prob <- predict(dt_model_cpopt, titanic_test, type = "prob")
+paste("auc:", auc(actual = titanic_test$Survived, predicted = dt_pred_cpopt_prob[ , 2]))
+
+```
+
+<br>
+
