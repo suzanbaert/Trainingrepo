@@ -24,7 +24,7 @@ glimpse(titanic)
 # Decision trees
 
 
-# 1. Standard decision tree - no pruning
+### 1. Standard decision tree - no pruning
 
 ```{r}
 library(rpart)
@@ -74,7 +74,7 @@ dt_auc
 <br>
 
 
-# 2. Decision tree - via cp optimal
+### 2. Decision tree - via cp optimal
 
 ```{r}
 
@@ -116,4 +116,79 @@ paste("auc:", auc(actual = titanic_test$Survived, predicted = dt_pred_cpopt_prob
 ```
 
 <br>
+
+### 3. Grid search
+
+Possible tuning parameters:
+- maxdepth
+- minsplit
+- cp
+- impurity index via "Gini index" or "information"
+
+```{r}
+
+maxdepth = seq(2, 10, 1)
+minsplit = seq(5, 50, 5)
+cp = seq(0.01, 0.02, 0.001)
+index = c("gini", "information")
+
+hypergrid <- expand.grid(minsplit = minsplit, maxdepth = maxdepth, cp = cp, index = index)
+dt_gsmodels <- list()
+
+for (i in 1:nrow(hypergrid)) {
+  dt_gsmodels[[i]] <- rpart(Survived ~ Pclass + Sex + Age + Fare + Embarked, 
+                  data = titanic_train,
+                  method = "class",
+                  control = rpart.control(cp = hypergrid$cp[i], minsplit = hypergrid$minsplit[i], maxdepth = hypergrid$maxdepth[i]),
+                  parms = list(split = hypergrid$index[i]))
+}
+
+```
+
+
+Predictions on 1980 models:
+
+```{r}
+
+for (i in 1:length(dt_gsmodels)) {
+  pred_class <- predict(dt_gsmodels[[i]], titanic_test, type = "class")
+  hypergrid$accuracy[i] <- mean(pred_class == titanic_test$Survived)
+  hypergrid$ce[i] <- ce(actual = titanic_test$Survived, predicted = pred_class)
+  
+  pred_prob <- predict(dt_gsmodels[[i]], titanic_test, type = "prob")
+  hypergrid$auc[i] <- auc(actual = titanic_test$Survived, predicted = pred_prob[ ,2])
+  }
+
+
+```
+
+
+
+Finding the best models
+- accuracy varies from 0.789 until 0.819
+- classificaiton error from 0,18 to 0,21
+- auc from 0,757 to 0,844
+
+
+18 models with max auc
+- all have cp  0.01 and information index
+- maxdepth higher than 5 (no change in any number afterwards)
+- minsplit between 5-15
+
+
+```{r}
+hypergrid %>% 
+  filter(auc == max(auc))
+```
+
+```{r}
+dt_model_opt <- rpart(Survived ~ Pclass + Sex + Age + Fare + Embarked, 
+                  data = titanic_train,
+                  method = "class",
+                  control = rpart.control(cp = 0.01, minsplit = 10, maxdepth = 5),
+                  parms = list(split = "information"))
+
+rpart.plot(dt_model_opt)
+
+```
 
